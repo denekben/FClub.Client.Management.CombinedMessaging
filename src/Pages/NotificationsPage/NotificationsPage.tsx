@@ -45,14 +45,15 @@ const NotificationsPage = () => {
     const [notificationSearchParams, setNotificationSearchParams] = useState({
         pageNumber: 1,
         pageSize: 2,
-        nameSearchPhrase: ""
+        titleSearchPhrase: ""
     });
     const [availableNotifications, setAvailableNotifications] = useState<NotificationDto[]>([]);
     const [totalNotifications, setTotalNotifications] = useState(0);
     const [dropdownOpen, setDropdownOpen] = useState<"attendance" | "tariff" | "branch" | null>(null);
-    const [searchParams, setSearchParams] = useState<GetNotifications>({
+    const [searchParams, setSearchParams] = useState({
         pageNumber: 1,
         pageSize: 10,
+        titleSearchPhrase: ""
     });
     const [isCreate, setIsCreate] = useState<boolean>(false);
     const [isUpdate, setIsUpdate] = useState<boolean>(false);
@@ -62,7 +63,7 @@ const NotificationsPage = () => {
         fetchNotifications();
         }, [searchParams]);
 
-        const handleSearch = (e: React.FormEvent) => {
+    const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         fetchNotifications();
     };
@@ -76,10 +77,10 @@ const NotificationsPage = () => {
     const fetchNotifications = async () => {
         setLoading(true);
         setError(null);
-        
         try {
         const response = await getNotificationsAPI(searchParams);
         setNotifications(response.data);
+        console.log(notifications)
         } catch (err) {
         setError('Ошибка загрузки нотификаций');
         toast.error('Не удалось загрузить данные нотификаций');
@@ -114,10 +115,11 @@ const NotificationsPage = () => {
     };
     
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const { name, value, type } = e.target;
-        setFormData(prev => ({
+        const { value } = e.target;
+        setSearchParams(prev => ({
             ...prev,
-            [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+            titleSearchPhrase: value,
+            pageNumber: 1 
         }));
     };
 
@@ -209,9 +211,11 @@ const NotificationsPage = () => {
 
     const handleNotificationSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
+        console.log("value")
+
         setNotificationSearchParams(prev => ({
             ...prev,
-            nameSearchPhrase: value,
+            titleSearchPhrase: value,
             pageNumber: 1
         }));
     };
