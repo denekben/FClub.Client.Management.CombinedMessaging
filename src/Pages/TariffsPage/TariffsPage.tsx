@@ -147,6 +147,23 @@ const TariffsPage = () => {
         }
     });
 
+        const handleServiceSelect = (selectedService: {serviceId: string, serviceName: string}) => {
+        const currentSelected = watch("selectedServices") || [];
+        const exists = currentSelected.some(s => s.serviceId === selectedService.serviceId);
+        
+        if (exists) {
+            setValue(
+                "selectedServices", 
+                currentSelected.filter(s => s.serviceId !== selectedService.serviceId)
+            );
+        } else {
+            setValue(
+                "selectedServices", 
+                [...currentSelected, selectedService]
+            );
+        }
+    };
+
     const addPriceForMonth = () => {
         if (newMonth > 0 && newPrice > 0) {
             if (selectedMonths.includes(newMonth)) {
@@ -167,7 +184,7 @@ const TariffsPage = () => {
         setValue(`priceForNMonths.${month}` as any, undefined);
       };
 
-      const handleServiceSelect = (selectedService: {serviceId: string, serviceName: string}) => {
+      const handleServiceSelectUpdate = (selectedService: {serviceId: string, serviceName: string}) => {
         const currentSelected = watchUpdate("selectedServices") || [];
         const exists = currentSelected.some(s => s.serviceId === selectedService.serviceId);
         
@@ -474,7 +491,7 @@ const TariffsPage = () => {
                                                             type="checkbox"
                                                             id={`service-${service.id}`}
                                                             checked={watchUpdate("selectedServices")?.some(s => s.serviceId === service.id)}
-                                                            onChange={() => handleServiceSelect({serviceId: service.id, serviceName: service.name})}
+                                                            onChange={() => handleServiceSelectUpdate({serviceId: service.id, serviceName: service.name})}
                                                             className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
                                                         />
                                                         <label htmlFor={`service-${service.id}`} className="ml-2 block text-sm text-gray-700">
