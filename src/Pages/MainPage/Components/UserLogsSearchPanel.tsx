@@ -26,30 +26,34 @@ export const UserLogsSearchPanel = (props: UserLogsSearchPanelProps) => {
   const [hasMore, setHasMore] = useState(false);
   const pageSize = 4;
 
-  const fetchLogs = async (page: number = 1) => {
-    setLoading(true);
-    setError(null);
-  
-    const params: GetLogs = {
-      userId: props.userId ? props.userId : null,
-      serviceNameSearchPhrase: service.trim() ? service.trim() : null,
-      textSearchPhrase: query.trim() ? query.trim() : null,
-      sortByCreatedDate: false,
-      pageNumber: page,
-      pageSize: pageSize,
-    };
-    try {
-      let response;
-      response = await getUserLogsAPI(params);
-      const newLogs = response?.data || [];
-      setLogs(newLogs);
-      setHasMore(newLogs.length >= pageSize);
-    } catch {
-      setError('Ошибка при загрузке логов');
-    } finally {
-      setLoading(false);
-    }
+const fetchLogs = async (page: number = 1) => {
+  setLoading(true);
+  setError(null);
+
+  const params: GetLogs = {
+    userId: props.userId ? props.userId : null,
+    serviceNameSearchPhrase: service.trim() ? service.trim() : null,
+    textSearchPhrase: query.trim() ? query.trim() : null,
+    sortByCreatedDate: false,
+    pageNumber: page,
+    pageSize: pageSize,
   };
+  
+  try {
+    const response = await getUserLogsAPI(params);
+    
+    const newLogs = Array.isArray(response?.data) ? response.data : [];
+    
+    setLogs(newLogs);
+    setHasMore(newLogs.length >= pageSize);
+  } catch (error) {
+    setError('Ошибка при загрузке логов');
+    setLogs([]); 
+    console.error('Error fetching logs:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     const timer = setTimeout(() => {
