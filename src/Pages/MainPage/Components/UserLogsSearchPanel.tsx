@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { UserLogDto } from '../../../Models/Shared/UserLogDto';
-import { GetLogs } from '../../../Services/Shared/UserLogs';
-import { getUserLogsAPI as getAccessControlLogs } from '../../../Services/AccessControl/AppUsersService';
-import { getUserLogsAPI as getNotificationsLogs } from '../../../Services/Notifications/AppUsersService';
-import { getUserLogsAPI as getManagementLogs } from '../../../Services/Management/AppUsersService';
+import { UserLogDto } from '../../../Models/Logging/UserLogDto';
 import { AuthContext } from '../../../Context/AuthContext';
+import { GetLogs, getUserLogsAPI } from '../../../Services/Logging/AppUsersService';
 
 const SERVICES = {
   management: 'Management API',
@@ -34,7 +31,8 @@ export const UserLogsSearchPanel = (props: UserLogsSearchPanelProps) => {
     setError(null);
   
     const params: GetLogs = {
-        userId: props.userId ? props.userId : null,
+      userId: props.userId ? props.userId : null,
+      serviceNameSearchPhrase: service.trim() ? service.trim() : null,
       textSearchPhrase: query.trim() ? query.trim() : null,
       sortByCreatedDate: false,
       pageNumber: page,
@@ -42,19 +40,7 @@ export const UserLogsSearchPanel = (props: UserLogsSearchPanelProps) => {
     };
     try {
       let response;
-            switch (service) {
-                case 'management':
-                  response = await getManagementLogs(params);
-                  break;
-                case 'accessControl':
-                  response = await getAccessControlLogs(params);
-                  break;
-                case 'notifications':
-                  response = await getNotificationsLogs(params);
-                  break;
-        }
-
-      
+      response = await getUserLogsAPI(params);
       const newLogs = response?.data || [];
       setLogs(newLogs);
       setHasMore(newLogs.length >= pageSize);
@@ -167,3 +153,7 @@ export const UserLogsSearchPanel = (props: UserLogsSearchPanelProps) => {
     </div>
   );
 };
+
+function getUserLogs(params: GetLogs): any {
+  throw new Error('Function not implemented.');
+}

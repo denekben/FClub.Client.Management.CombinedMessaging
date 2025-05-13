@@ -1,9 +1,8 @@
 import axios, { AxiosResponse } from "axios"
 import {toast} from "react-toastify"
 import { TokensDto } from "../../Models/Management/AppUsers/TokensDto"
-import { UserLogDto } from "../../Models/Shared/UserLogDto"
+import { UserLogDto } from "../../Models/Logging/UserLogDto"
 import { UserDto } from "../../Models/Management/AppUsers/UserDto"
-import { GetCurrentUserLogs, GetLogs } from "../Shared/UserLogs"
 
 export type SignIn = {
     email: string,
@@ -103,30 +102,6 @@ export const unblockUserAPI = async(userId: string) : Promise<AxiosResponse> => 
     try{
         const data = await axios.put(
             `${process.env.REACT_APP_MANAGEMENT_API}/users/${userId}/unblock`,
-        )
-        return data
-    } catch (error){
-        throw error
-    }
-}
-
-export const getCurrentUserLogsAPI = async(params : GetCurrentUserLogs) : Promise<AxiosResponse<UserLogDto[]>> => {
-    try {
-        const data = await axios.get<UserLogDto[]>(
-            `${process.env.REACT_APP_MANAGEMENT_API}/users/current/logs`,
-            {params}
-        )
-        return data
-    } catch (error){
-        throw error
-    }
-}
-
-export const getUserLogsAPI = async(params : GetLogs) : Promise<AxiosResponse<UserLogDto[]>> => {
-    try {
-        const data = await axios.get<UserLogDto[]>(
-            `${process.env.REACT_APP_MANAGEMENT_API}/users/logs`,
-            {params}
         )
         return data
     } catch (error){

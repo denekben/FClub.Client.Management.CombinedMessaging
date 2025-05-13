@@ -49,7 +49,7 @@ export const MainPage = () => {
                 <main className="pt-5 p-6 overflow-auto h-full">
                     <div className="max-w-7xl mx-auto mt-10">
                         <UserInfoPanel user={user} loading={loading} />
-                        <UserLogsSearchPanel userId={userId} />
+                        <UserLogsSearchPanel userId={user?.id} />
                     </div>
                 </main>
             )}
